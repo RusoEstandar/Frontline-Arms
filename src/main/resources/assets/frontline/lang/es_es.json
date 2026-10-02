@@ -1,0 +1,19 @@
+{
+  "itemGroup.frontline": "Frontline Arms",
+  "entity.frontline.grenade": "Granada",
+  "key.frontline.reload": "Recargar",
+  "key.categories.frontline": "Frontline Arms",
+  "hud.frontline.reloading": "RECARGANDO",
+  "item.frontline.p9_pistol": "Pistola P9",
+  "item.frontline.vx9_smg": "Subfusil VX-9",
+  "item.frontline.ar14_rifle": "Fusil de asalto AR-14",
+  "item.frontline.m12_shotgun": "Escopeta de bombeo M12",
+  "item.frontline.kr50_sniper": "Fusil de francotirador KR-50",
+  "item.frontline.ammo_9mm": "Municion 9mm",
+  "item.frontline.ammo_556": "Municion 5.56",
+  "item.frontline.ammo_12g": "Cartuchos calibre 12",
+  "item.frontline.ammo_50cal": "Municion .50",
+  "item.frontline.frag_grenade": "Granada de fragmentacion",
+  "item.frontline.flashbang": "Granada aturdidora",
+  "item.frontline.smoke_grenade": "Granada de humo"
+}

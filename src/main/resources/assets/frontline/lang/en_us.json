@@ -1,0 +1,19 @@
+{
+  "itemGroup.frontline": "Frontline Arms",
+  "entity.frontline.grenade": "Grenade",
+  "key.frontline.reload": "Reload",
+  "key.categories.frontline": "Frontline Arms",
+  "hud.frontline.reloading": "RELOADING",
+  "item.frontline.p9_pistol": "P9 Pistol",
+  "item.frontline.vx9_smg": "VX-9 SMG",
+  "item.frontline.ar14_rifle": "AR-14 Assault Rifle",
+  "item.frontline.m12_shotgun": "M12 Pump Shotgun",
+  "item.frontline.kr50_sniper": "KR-50 Sniper Rifle",
+  "item.frontline.ammo_9mm": "9mm Rounds",
+  "item.frontline.ammo_556": "5.56 Rounds",
+  "item.frontline.ammo_12g": "12 Gauge Shells",
+  "item.frontline.ammo_50cal": ".50 Cal Rounds",
+  "item.frontline.frag_grenade": "Frag Grenade",
+  "item.frontline.flashbang": "Flashbang",
+  "item.frontline.smoke_grenade": "Smoke Grenade"
+}
