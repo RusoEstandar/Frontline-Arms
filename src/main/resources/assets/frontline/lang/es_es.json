@@ -15,5 +15,6 @@
   "item.frontline.ammo_50cal": "Municion .50",
   "item.frontline.frag_grenade": "Granada de fragmentacion",
   "item.frontline.flashbang": "Granada aturdidora",
-  "item.frontline.smoke_grenade": "Granada de humo"
+  "item.frontline.smoke_grenade": "Granada de humo",
+  "key.frontline.inspect": "Inspeccionar arma"
 }

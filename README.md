@@ -52,6 +52,19 @@ que comparten la textura `textures/item/palette.png` (9 colores). Los ajustes de
 estan en el bloque `"display"` de cada JSON. Si un arma se ve girada o descentrada, ajusta ahi `rotation`/`translation`/`scale`
 (o abre el JSON en Blockbench, pestana Display, para verlo en vivo). Las municiones siguen siendo sprites planos.
 
+## Armas en primera persona y animaciones
+
+Las armas se dibujan en primera persona con un renderizador propio (`client/GunRenderer.java`) a partir de datos:
+`assets/frontline/guns/<arma>.json` define las piezas (cuerpo, corredera/cerrojo/bombeo, cargador, manos, fogonazo),
+las poses (cadera, apuntado, sprint) y las animaciones por fotogramas clave (`draw`, `shoot`, `reload`, `reload_empty`, `inspect`).
+Ademas hay balanceo al andar, respiracion, inercia al girar, corredera retenida con el cargador vacio y fogonazo al disparar.
+
+- **Tecla H:** inspeccionar el arma (reasignable).
+- **F3 + T** recarga los modelos en el juego: puedes editar un JSON de `guns/` y verlo sin reiniciar (en desarrollo con `runClient`).
+- Los JSON se generan con `python3 tools/gen_guns.py` (ahi estan las medidas de cada arma y los parametros de animacion).
+  Necesita Python 3 y `pip install pillow`. Si quieres tocar a mano un JSON, puedes hacerlo directamente.
+- Los modelos de `models/item/` se usan solo en inventario, suelo y tercera persona.
+
 ## Estado
 
 **Sin compilar ni probar.** Lo escribi sin acceso a las librerias de Forge, asi que puede haber errores de compilacion

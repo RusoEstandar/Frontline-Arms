@@ -1,6 +1,9 @@
 package com.frontline.client;
 
 import com.frontline.Frontline;
+import com.frontline.client.anim.GunAnim;
+import com.frontline.client.anim.GunModelData;
+import com.frontline.client.anim.GunModels;
 import com.frontline.gun.GunItem;
 import com.frontline.gun.GunStats;
 import com.frontline.net.FirePacket;
@@ -42,7 +45,14 @@ public final class ClientEvents {
 
         ItemStack held = p.getMainHandItem();
         boolean attackDown = mc.options.keyAttack.isDown();
-        if (!(held.getItem() instanceof GunItem gun) || mc.screen != null) {
+        if (!(held.getItem() instanceof GunItem gun)) {
+            ads = 0;
+            adsPrev = 0;
+            wasAttack = attackDown;
+            GunAnim.reset();
+            return;
+        }
+        if (mc.screen != null) {
             ads = 0;
             adsPrev = 0;
             wasAttack = attackDown;
@@ -54,6 +64,10 @@ public final class ClientEvents {
         boolean aiming = mc.options.keyUse.isDown() && !p.isSprinting() && !reloading;
         float step = 1f / s.adsTicks;
         ads = Mth.clamp(ads + (aiming ? step : -step), 0f, 1f);
+
+        GunModelData md = GunModels.get(held.getItem());
+        GunAnim.tick(p, held, gun, md);
+        while (ModKeys.INSPECT.consumeClick()) GunAnim.inspect(md, held, p);
 
         boolean pull = attackDown && (s.auto || !wasAttack);
         wasAttack = attackDown;
@@ -72,6 +86,7 @@ public final class ClientEvents {
         }
         nextShot = now + s.delay;
         Network.CHANNEL.sendToServer(new FirePacket(aiming));
+        GunAnim.onShoot(GunModels.get(held.getItem()));
 
         // Retroceso: patada hacia arriba con algo de deriva lateral; menor al apuntar.
         float k = aiming ? 0.6f : 1f;

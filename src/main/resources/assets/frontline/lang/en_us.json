@@ -15,5 +15,6 @@
   "item.frontline.ammo_50cal": ".50 Cal Rounds",
   "item.frontline.frag_grenade": "Frag Grenade",
   "item.frontline.flashbang": "Flashbang",
-  "item.frontline.smoke_grenade": "Smoke Grenade"
+  "item.frontline.smoke_grenade": "Smoke Grenade",
+  "key.frontline.inspect": "Inspect weapon"
 }

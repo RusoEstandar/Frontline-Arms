@@ -2,9 +2,11 @@ package com.frontline.client;
 
 import com.frontline.Frontline;
 import com.frontline.ModEntities;
+import com.frontline.client.anim.GunModels;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -14,7 +16,15 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = Frontline.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public final class ClientModEvents {
     @SubscribeEvent
-    public static void onKeys(RegisterKeyMappingsEvent e) { e.register(ModKeys.RELOAD); }
+    public static void onKeys(RegisterKeyMappingsEvent e) {
+        e.register(ModKeys.RELOAD);
+        e.register(ModKeys.INSPECT);
+    }
+
+    @SubscribeEvent
+    public static void onReloadListeners(RegisterClientReloadListenersEvent e) {
+        e.registerReloadListener(new GunModels());
+    }
 
     @SubscribeEvent
     public static void onOverlays(RegisterGuiOverlaysEvent e) { e.registerAboveAll("ammo", HudOverlay.INSTANCE); }

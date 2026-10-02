@@ -32,12 +32,14 @@ public final class HudOverlay implements IGuiOverlay {
         String main = reloading ? Component.translatable("hud.frontline.reloading").getString() : String.valueOf(ammo);
         int color = reloading ? 0xFFFFAA00 : (ammo == 0 ? 0xFFFF4444 : (ammo <= gun.stats().mag / 4 ? 0xFFFFCC44 : 0xFFFFFFFF));
 
+        String res = "/ " + (p.getAbilities().instabuild ? "\u221E" : String.valueOf(reserve));
+        int resW = font.width(res);
+        int mainW = font.width(main) * 2;
+        g.drawString(font, res, w - 10 - resW, h - 38, 0xFFBBBBBB, true);
         g.pose().pushPose();
         g.pose().scale(2f, 2f, 1f);
-        g.drawString(font, main, (int) ((w - 100) / 2f), (int) ((h - 46) / 2f), color, true);
+        g.drawString(font, main, (int) ((w - 14 - resW - mainW) / 2f), (int) ((h - 46) / 2f), color, true);
         g.pose().popPose();
-        String res = "/ " + (p.getAbilities().instabuild ? "\u221E" : String.valueOf(reserve));
-        g.drawString(font, res, w - 52, h - 36, 0xFFBBBBBB, true);
     }
 
     private static void drawScope(GuiGraphics g, int w, int h) {
