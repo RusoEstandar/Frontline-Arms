@@ -61,9 +61,18 @@ Ademas hay balanceo al andar, respiracion, inercia al girar, corredera retenida 
 
 - **Tecla H:** inspeccionar el arma (reasignable).
 - **F3 + T** recarga los modelos en el juego: puedes editar un JSON de `guns/` y verlo sin reiniciar (en desarrollo con `runClient`).
-- Los JSON se generan con `python3 tools/gen_guns.py` (ahi estan las medidas de cada arma y los parametros de animacion).
+- Los JSON de las armas de cajas se generan con `python3 tools/gen_guns.py` (ahi estan las medidas de cada arma y los parametros de animacion).
   Necesita Python 3 y `pip install pillow`. Si quieres tocar a mano un JSON, puedes hacerlo directamente.
 - Los modelos de `models/item/` se usan solo en inventario, suelo y tercera persona.
+
+## Modelos 3D importados (AR-14, VX-9, P9)
+
+El fusil, el subfusil y la pistola usan modelos GLB de Sketchfab (ver `CREDITS.md`: **uno es no comercial**).
+`tools/gen_models.py` los convierte: orienta y escala el modelo, separa el cargador y la palanca de montar (o la corredera en la pistola)
+como piezas animables, extrae las texturas a `textures/gun/` y escribe `guns/<arma>.json` con las manos, el fogonazo y las animaciones.
+Orden para regenerar todo: `python3 tools/gen_guns.py` y despues `python3 tools/gen_models.py` (necesitan `pip install numpy pillow`).
+Para cambiar un modelo: pon el GLB en `tools/source_models/`, ajusta su entrada en `SPECS` (orientacion, escala, empunadura, mira) y regenera.
+El M12 y el KR-50 siguen con modelos de cajas. En inventario y tercera persona se siguen usando los modelos de bloque.
 
 ## Estado
 

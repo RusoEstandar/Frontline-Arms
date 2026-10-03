@@ -32,6 +32,8 @@ import net.minecraftforge.fml.common.Mod;
 public final class ClientEvents {
     /** Progreso de apuntado 0..1 (actual y del tick anterior, para interpolar). */
     public static float ads, adsPrev;
+    /** A partir de este progreso de apuntado se muestra la mira telescopica y se oculta el arma. */
+    public static final float SCOPE_OVERLAY_AT = 0.9f;
     private static boolean wasAttack;
     private static long nextShot;
 

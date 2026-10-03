@@ -147,26 +147,32 @@ def inspect_anim():
 
 # ---------- ensamblado ----------
 SCALE = 0.45
-for name, g in GUNS.items():
-    s = 0.0625 * SCALE
-    px, py, pz = g['pivot']; sx, sy, sz = g['sight']
-    cam = ((sz-pz)*s, (sy-py)*s, -(sx-px)*s)                  # modelo -> camara (rotacion Y 90)
-    ads = [-cam[0], -cam[1], -g['ads_d']-cam[2], 0, 0, 0]       # mira trasera centrada a ads_d metros del ojo
-    hip = [0.28, -0.28, -0.50, 0, 3, 0]
-    sprint = [0.22, -0.30, -0.35, -30, 28, -8]
 
-    parts = {"body": part(g['body'])}
-    parts["slide"] = part(g['slide'], pivot=g.get('slide_pivot', (0,0,0)), lock=(-g['travel'],0,0) if g['kind']=='mag' else None)
-    if g['mag']: parts["mag"] = part(g['mag'])
-    parts["hand_r"] = part(r_arm(*g['rhand']))
-    parts["hand_l"] = part(g['lhand'])
-    parts["flash"] = part(flash(*g['muzzle']))
+def build_box_guns():
+  for name, g in GUNS.items():
+      s = 0.0625 * SCALE
+      px, py, pz = g['pivot']; sx, sy, sz = g['sight']
+      cam = ((sz-pz)*s, (sy-py)*s, -(sx-px)*s)                  # modelo -> camara (rotacion Y 90)
+      ads = [-cam[0], -cam[1], -g['ads_d']-cam[2], 0, 0, 0]       # mira trasera centrada a ads_d metros del ojo
+      hip = [0.28, -0.28, -0.50, 0, 3, 0]
+      sprint = [0.22, -0.30, -0.35, -30, 28, -8]
 
-    anims = {"draw": draw_anim(), "shoot": shoot_anim(g), "reload": reload_anim(g, False), "inspect": inspect_anim()}
-    if g['kind'] in ('mag','bolt'): anims["reload_empty"] = reload_anim(g, True)
+      parts = {"body": part(g['body'])}
+      parts["slide"] = part(g['slide'], pivot=g.get('slide_pivot', (0,0,0)), lock=(-g['travel'],0,0) if g['kind']=='mag' else None)
+      if g['mag']: parts["mag"] = part(g['mag'])
+      parts["hand_r"] = part(r_arm(*g['rhand']))
+      parts["hand_l"] = part(g['lhand'])
+      parts["flash"] = part(flash(*g['muzzle']))
 
-    out = {"pivot": list(g['pivot']), "scale": SCALE,
-           "hip": hip, "ads": [round(v,4) for v in ads], "sprint": sprint,
-           "parts": parts, "anims": anims}
-    json.dump(out, open(f'{A}/guns/{name}.json','w'), separators=(',',':'))
-    print(name, 'ads=', [round(v,3) for v in ads[:3]], 'anims=', list(anims))
+      anims = {"draw": draw_anim(), "shoot": shoot_anim(g), "reload": reload_anim(g, False), "inspect": inspect_anim()}
+      if g['kind'] in ('mag','bolt'): anims["reload_empty"] = reload_anim(g, True)
+
+      out = {"pivot": list(g['pivot']), "scale": SCALE,
+             "hip": hip, "ads": [round(v,4) for v in ads], "sprint": sprint,
+             "parts": parts, "anims": anims}
+      json.dump(out, open(f'{A}/guns/{name}.json','w'), separators=(',',':'))
+      print(name, 'ads=', [round(v,3) for v in ads[:3]], 'anims=', list(anims))
+
+
+if __name__ == '__main__':
+    build_box_guns()

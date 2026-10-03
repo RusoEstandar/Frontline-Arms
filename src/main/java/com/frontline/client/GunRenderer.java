@@ -10,6 +10,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
@@ -34,7 +35,7 @@ public final class GunRenderer {
     public static void onRenderHand(RenderHandEvent e) {
         if (e.getHand() != InteractionHand.MAIN_HAND) return;
         ItemStack stack = e.getItemStack();
-        if (!(stack.getItem() instanceof GunItem)) return;
+        if (!(stack.getItem() instanceof GunItem gun)) return;
         GunModelData m = GunModels.get(stack.getItem());
         Minecraft mc = Minecraft.getInstance();
         LocalPlayer p = mc.player;
@@ -43,6 +44,7 @@ public final class GunRenderer {
 
         float pt = e.getPartialTick();
         float adsRaw = Mth.lerp(pt, ClientEvents.adsPrev, ClientEvents.ads);
+        if (gun.stats().scope && adsRaw > ClientEvents.SCOPE_OVERLAY_AT) return; // mirando por la mira: no se dibuja el arma
         float adsE = adsRaw * adsRaw * (3f - 2f * adsRaw);
         float spr = Mth.lerp(pt, GunAnim.sprintPrev, GunAnim.sprint);
         spr = spr * spr * (3f - 2f * spr) * (1f - adsE);
@@ -86,7 +88,7 @@ public final class GunRenderer {
         boolean reloading = GunItem.isReloading(stack);
         boolean empty = GunItem.getAmmo(stack) == 0 && !reloading;
         boolean shooting = "shoot".equals(GunAnim.current()) && t >= 0f && t < 1.6f;
-        VertexConsumer vc = e.getMultiBufferSource().getBuffer(RenderType.entityCutoutNoCull(PALETTE));
+        MultiBufferSource buffers = e.getMultiBufferSource();
 
         for (GunModelData.Part part : m.parts.values()) {
             boolean flash = part.name.equals("flash");
@@ -104,7 +106,14 @@ public final class GunRenderer {
                 ps.translate(-part.pivot[0], -part.pivot[1], -part.pivot[2]);
             }
             int light = flash ? FULL_BRIGHT : e.getPackedLight();
-            for (GunModelData.Box b : part.boxes) addBox(vc, ps.last(), b, light);
+            // Cada getBuffer puede cerrar el lote anterior: se pide de nuevo antes de escribir.
+            if (!part.boxes.isEmpty()) {
+                VertexConsumer vc = buffers.getBuffer(RenderType.entityCutoutNoCull(PALETTE));
+                for (GunModelData.Box b : part.boxes) addBox(vc, ps.last(), b, light);
+            }
+            for (GunModelData.Mesh mesh : part.meshes) {
+                addMesh(buffers.getBuffer(RenderType.entityCutoutNoCull(mesh.tex)), ps.last(), mesh, light);
+            }
             ps.popPose();
         }
         ps.popPose();
@@ -127,6 +136,19 @@ public final class GunRenderer {
         quad(vc, pose, 1, 0, 0, u, v, light, x1, y0, z1, x1, y0, z0, x1, y1, z0, x1, y1, z1);  // este
         quad(vc, pose, 0, -1, 0, u, v, light, x0, y0, z0, x1, y0, z0, x1, y0, z1, x0, y0, z1); // abajo
         quad(vc, pose, 0, 1, 0, u, v, light, x0, y1, z1, x1, y1, z1, x1, y1, z0, x0, y1, z0);  // arriba
+    }
+
+    /** Triangulos como quads degenerados (el 4o vertice repite el 3o): el formato de entidad usa quads. */
+    private static void addMesh(VertexConsumer vc, PoseStack.Pose pose, GunModelData.Mesh m, int light) {
+        float[] v = m.v;
+        int[] ix = m.idx;
+        for (int t = 0; t + 2 < ix.length; t += 3) {
+            int a = ix[t] * 8, b = ix[t + 1] * 8, c = ix[t + 2] * 8;
+            vert(vc, pose, v[a], v[a + 1], v[a + 2], v[a + 3], v[a + 4], light, v[a + 5], v[a + 6], v[a + 7]);
+            vert(vc, pose, v[b], v[b + 1], v[b + 2], v[b + 3], v[b + 4], light, v[b + 5], v[b + 6], v[b + 7]);
+            vert(vc, pose, v[c], v[c + 1], v[c + 2], v[c + 3], v[c + 4], light, v[c + 5], v[c + 6], v[c + 7]);
+            vert(vc, pose, v[c], v[c + 1], v[c + 2], v[c + 3], v[c + 4], light, v[c + 5], v[c + 6], v[c + 7]);
+        }
     }
 
     private static void quad(VertexConsumer vc, PoseStack.Pose pose, float nx, float ny, float nz, float u, float v, int light,

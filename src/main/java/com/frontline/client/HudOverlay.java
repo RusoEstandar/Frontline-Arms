@@ -6,6 +6,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
@@ -22,7 +23,7 @@ public final class HudOverlay implements IGuiOverlay {
         ItemStack held = p.getMainHandItem();
         if (!(held.getItem() instanceof GunItem gun)) return;
 
-        if (gun.stats().scope && ClientEvents.ads > 0.9f) drawScope(g, w, h);
+        if (gun.stats().scope && Mth.lerp(partialTick, ClientEvents.adsPrev, ClientEvents.ads) > ClientEvents.SCOPE_OVERLAY_AT) drawScope(g, w, h);
 
         Font font = mc.font;
         int ammo = GunItem.getAmmo(held);

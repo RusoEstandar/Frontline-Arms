@@ -8,6 +8,7 @@ version="${mod_version}"
 displayName="${mod_name}"
 authors="${mod_authors}"
 description='''${mod_description}'''
+credits='''3D models (adapted): Low Poly Colt M4A1 by puresaltt (CC BY 4.0); Minecraft - HL2 MP7 by hatt_ (CC BY-NC 4.0, non-commercial); [Minecraft] Pistol by sedona1029 (CC BY 4.0). All from Sketchfab. See CREDITS.md.'''
 
 [[dependencies.${mod_id}]]
     modId="forge"

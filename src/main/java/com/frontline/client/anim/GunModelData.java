@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Modelo de arma definido por datos (assets/frontline/guns/*.json).
@@ -26,12 +27,26 @@ public final class GunModelData {
         }
     }
 
+    /** Malla de triangulos con textura propia. Vertices intercalados: x,y,z,u,v,nx,ny,nz. */
+    public static final class Mesh {
+        public final ResourceLocation tex;
+        public final float[] v;
+        public final int[] idx;
+
+        Mesh(ResourceLocation tex, float[] v, int[] idx) {
+            this.tex = tex;
+            this.v = v;
+            this.idx = idx;
+        }
+    }
+
     public static final class Part {
         public final String name;
         public float[] pivot = new float[3];
         public float[] rot = new float[3];
         public float[] lock = null; // desplazamiento fijo con el cargador vacio (corredera atras)
         public final List<Box> boxes = new ArrayList<>();
+        public final List<Mesh> meshes = new ArrayList<>();
 
         Part(String name) { this.name = name; }
     }
@@ -68,7 +83,16 @@ public final class GunModelData {
             if (po.has("pivot")) part.pivot = floats(po.get("pivot"));
             if (po.has("rot")) part.rot = floats(po.get("rot"));
             if (po.has("lock")) part.lock = floats(po.get("lock"));
-            for (JsonElement b : po.getAsJsonArray("boxes")) part.boxes.add(new Box(floats(b)));
+            if (po.has("boxes")) for (JsonElement b : po.getAsJsonArray("boxes")) part.boxes.add(new Box(floats(b)));
+            if (po.has("meshes")) {
+                for (JsonElement me : po.getAsJsonArray("meshes")) {
+                    JsonObject mo = me.getAsJsonObject();
+                    JsonArray ia = mo.getAsJsonArray("i");
+                    int[] idx = new int[ia.size()];
+                    for (int i = 0; i < idx.length; i++) idx[i] = ia.get(i).getAsInt();
+                    part.meshes.add(new Mesh(new ResourceLocation(mo.get("tex").getAsString()), floats(mo.get("v")), idx));
+                }
+            }
             d.parts.put(en.getKey(), part);
         }
 
